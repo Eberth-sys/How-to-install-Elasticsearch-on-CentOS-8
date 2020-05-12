@@ -1,0 +1,81 @@
+******************** - - [How to Install Logstash on CentOS 8] - - *****************************
+ 
+•	Step 1. Install the Logstash package.
+ 
+#dnf install logstash
+ 
+•	Step 2. Create the configuration file for beats input called 'input-beat.conf'.
+ 
+#cd /etc/logstash/conf.d/
+#vim input-beat.conf
+ 
+[Paste the following configuration].
+ 
+input {
+  beats {
+    port => 5044
+    ssl => false
+  }
+}
+ 
+*[Save and close]*.
+ 
+•	Step 3. Create 'syslog-filter.conf' configuration file.
+ 
+#vim syslog-filter.conf
+ 
+*[Paste the following configuration]*.
+ 
+filter {
+  if [type] == "syslog" {
+    grok {
+      match => { "message" => "%{SYSLOGTIMESTAMP:syslog_timestamp} %{SYSLOGHOST:syslog_hostname} %{DATA:syslog_program}(?:\[%{POSINT:syslog_pid}\])?: %{GREEDYDATA:syslog_message}" }
+      add_field => [ "received_at", "%{@timestamp}" ]
+      add_field => [ "received_from", "%{host}" ]
+    }
+    date {
+      match => [ "syslog_timestamp", "MMM  d HH:mm:ss", "MMM dd HH:mm:ss" ]
+    }
+  }
+}
+ 
+*[Save and close]*.
+ 
+•	Step 4. create the output configuration for Elasticsearch 'output-elasticsearch.conf'. 
+ 
+#vim output-elasticsearch.conf 
+ 
+*[Paste the following configuration]*.
+ 
+output {
+  elasticsearch {
+    hosts => ["(Your Server Ip address):9200"]
+    manage_template => false
+    index => "%{[@metadata][beat]}-%{+YYYY.MM.dd}"
+    document_type => "%{[@metadata][type]}"
+  }
+}
+ 
+*[Save and close]*.
+ 
+•	Step 6. Start and enable logstash
+ 
+#systemctl daemon-reload
+#systemctl start logstash
+#systemctl enable logstash
+#systemctl status logstash
+ 
+•	Step 7. Configure the firewall to allow Logstash
+ 
+#firewall-cmd --add-port=5044/tcp
+#firewall-cmd --add-port=5044/tcp --permanent
+#firewall-cmd --reload
+
+
+[**********Congratulation’s! You have successfully installed Logstash on CentOS 8.*****************]
+
+You will find this tutorial on Youtube:
+
+https://www.youtube.com/channel/UC5HQYBWugeFvwL1MUCXrU3Q
+
+Thanks for your time.!
