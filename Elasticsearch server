@@ -1,0 +1,101 @@
+**************--> How to Install Elasticsearch on CentOS 8 <--****************************
+
+•	Step 1: First let’s start by ensuring your system is up to date.
+ 
+#dnf update
+ 
+•	Step 2: Installing Java.
+ 
+#dnf install java-11-openjdk-devel
+ 
+Verify the Java installation by running the following command which will print the Java version:
+ 
+#java -version.
+ 
+•	Step 3: Add Elasticsearch Repository.
+ 
+Import Elasticsearch PGP key.
+ 
+ #rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
+ 
+•	Step 4: Create a new repository file Elasticsearch.
+ 
+#cd /etc/yum.repos.d/
+#vim elasticsearch.repo
+ 
+-*Paste the Elasticsearch repository below:*-
+ 
+[elasticsearch-7.x]
+name=Elasticsearch repository for 7.x packages
+baseurl=https://artifacts.elastic.co/packages/7.x/yum
+gpgcheck=1
+gpgkey=https://artifacts.elastic.co/GPG-KEY-elasticsearch
+enabled=1
+autorefresh=1
+type=rpm-md
+ 
+*Save and close*.
+ 
+•	Step 5: Create a new repository file Elasticsearch.
+ 
+#dnf repolist
+ 
+And you will get the Elasticsearch repository that has been added to the CentOS 8 server.
+ 
+•	Step 6.  Install and Configure Elasticsearch.
+
+Install the Elasticsearch package.
+ 
+#dnf install elasticsearch 
+ 
+Once the installation is complete, go to the:
+ 
+#cd /etc/elasticsearch/
+#vim elasticsearch.yml
+ 
+Uncomment the following lines and change the value for each line as below.
+ 
+#network.host:(Your IP address)
+#http.port: 9200
+#node.name: node-1 (or preferred name)
+#cluster.initial_master_nodes: node-1 (or preferred name).
+  
+•	Step 7. Start and enable the service.
+
+#systemctl daemon-reload
+#systemctl enable elasticsearch.service 
+#systemctl start elasticsearch.service
+#systemctl status elasticsearch.service
+
+#systemctl restart --now elasticsearch.service
+ 
+•	Step 8. Allow traffic through TCP port 9200 in your firewall.
+ 
+#firewall-cmd --add-port=9200/tcp
+#firewall-cmd --add-port=9200/tcp –permanent
+
+#systemctl restart firewalld.service 
+ 
+•	Step 9.  Check if Elasticsearch is listening on port 9200.
+
+#netstat -antup | grep -i 9200
+
+•	Step 10. Check if Elasticsearch responds.
+
+--> curl -X GET http://localhost:9200
+ 
+#curl -X GET http://(Your Server IP address):9200
+ 
+
+•	Step 11 (Optional). To view the messages logged by the Elasticsearch service, use the following command:
+
+#journalctl -u elasticsearch
+
+ 
+**********Congratulation’s! You have successfully installed Elasticsearch.*************************
+
+You will find this tutorial on Youtube:
+
+https://www.youtube.com/channel/UC5HQYBWugeFvwL1MUCXrU3Q
+
+Thanks for your time.! 
