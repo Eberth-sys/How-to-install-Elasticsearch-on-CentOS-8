@@ -1,0 +1,42 @@
+************** - - How to install Kibana on CentOS 8 - - **************
+ 
+•	Step 1. Install the Kibana package
+
+#dnf install kibana
+ 
+ •	Step 2. Edit the configuration file Kibana.yml
+ 
+#cd /etc/kibana/
+#vim kibana.yml
+ 
+•	Step 3. Uncomment and change some lines configuration.
+
+#server.port: 5601
+#server.host:(Your IP address).
+#elasticsearch.hosts: http://(Your Server IP address):9200
+ 
+•	Step 4. Start and enable Kibana.
+ 
+#systemctl daemon-reload
+#systemctl enable kibana.service
+#systemctl start kibana.service
+#systemctl status kibana.service
+
+#netstat -plntu (optional)
+ 
+•	Step 5. Configure the firewall to allow kibana.
+ 
+#firewall-cmd --add-port=5601/tcp
+#firewall-cmd --add-port=5601/tcp --permanent
+ 
+ •	Step 6. Verify
+ 
+#http://(Your Server IP address):5601/
+
+**********Congratulation’s! You have successfully installed Kibana server on CentOS 8.*************************
+
+---> [You will find this tutorial on Youtube]:
+
+https://www.youtube.com/watch?v=qkzX_PPusqg&list=PLp9drjI0zOZVkbXf74kAMa_npwDt35gyY&index=2
+
+Thanks for your time.!
